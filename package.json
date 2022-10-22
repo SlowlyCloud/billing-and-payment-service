@@ -1,0 +1,24 @@
+{
+  "name": "billing-and-payment-service",
+  "version": "1.0.0",
+  "description": "Providing bill &amp; order management and ways to pay from blockchain for web3 payment.",
+  "main": "src/app.js",
+  "repository": "https://github.com/SlowlyCloud/billing-and-payment-service.git",
+  "author": "Rick Ryan",
+  "license": "MIT",
+  "scripts": {
+    "start": "node .",
+    "start-pretty": "node . | ./node_modules/.bin/bunyan",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "bunyan": "^1.8.15",
+    "deasync": "^0.1.28",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
+    "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.10.0"
+  }
+}
