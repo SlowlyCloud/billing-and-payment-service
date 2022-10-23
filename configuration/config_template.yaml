@@ -2,6 +2,11 @@ server:
   basePath: {{server_basePath}}
   port: 3000
   loggingLevel: {{server_loggingLevel}}
+  auth:
+    algorithms: {{server_auth_algs}}
+    privateKey: {{server_auth_pk}}
+    audience: {{server_auth_aud}}
+    issuer: {{server_auth_iss}}
 
 database:
   mongo:
