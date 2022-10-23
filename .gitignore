@@ -105,3 +105,4 @@ dist
 
 
 src/apis/v1/notification.js
+configuration/development.yaml

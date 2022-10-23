@@ -56,7 +56,7 @@ const server = app.listen(port, () => {
 })
 
 // graceful shutdown
-process.on('SIGTERM', toSyncFn(async () => {
+process.on('SIGTERM', () => toSyncFn(async () => {
   const info = await new Promise((res, rej) => {
     server.close((e) => {
       e ? rej(e) : res(true)

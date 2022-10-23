@@ -13,6 +13,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
 
   mongo-express:
+    # basicAuth credentials are "admin:pass"
     image: mongo-express
     restart: always
     ports:
@@ -20,5 +21,4 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/dock
-    
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/admin
