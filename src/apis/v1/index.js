@@ -10,7 +10,7 @@ router.use(async (req, res, next) => {
   if (!token) return res.status(403).send("Access Denied")
   const decoded = await new Promise((res, rej) => {
     jwt.verify(token, kepPem, {
-      algorithms: config.server.auth.algorithm,
+      algorithms: config.server.auth.algorithms,
       audience: config.server.auth.audience,
       issuer: config.server.auth.issuer
     }, (err, decoded) => {
