@@ -2,14 +2,17 @@ const { Meta } = require("../common")
 const PaymentInfo = require('./valueobj/payment_info')
 const ethereum = require('../blockchain/ethereum')
 const log = require('../logging')
+const config = require('../config')
 // Todo: waiting for implementation
 const repository = undefined
 
 // Todo: import from configuration
 const conf = {
-  minimumConfirms: 1,
-  confirmingTimeout: 30 * 1000
+  minimumConfirms: config.blockchain.ethereum.transaction.confirming.minimum,
+  confirmingTimeout: config.blockchain.ethereum.transaction.confirming.timeout
 }
+
+log.trace('domain Order configuration loaded: %s', conf)
 
 module.exports = class Order {
   constructor(buyerId, sellerId, paymentInfo, items, totalAmountPaid, note) {
@@ -53,7 +56,7 @@ module.exports = class Order {
     }
 
     this.status = 'completed'
-    
+
     // Todo: waiting for implementation
     this.meta.update()
 

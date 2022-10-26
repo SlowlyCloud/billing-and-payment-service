@@ -1,5 +1,6 @@
 const ethers = require('ethers')
 const config = require('../config')
+const log = require('../logging')
 
 const conf = {
   network: config.blockchain.ethereum.network,
@@ -14,6 +15,7 @@ const conf = {
 }
 
 const p = ethers.providers.getDefaultProvider(conf.network, conf.options)
+log.trace('chain delegation of ethereum loaded with configuration: %s', conf)
 
 module.exports = {
   transaction: {
