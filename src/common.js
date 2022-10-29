@@ -9,6 +9,11 @@ module.exports.Meta = class Meta {
         this.deletedAt = null
         this.version = 0
     }
+
+    update = () => {
+        this.version++
+        this.updatedAt = new Date()
+    }
 }
 
 // deep Number: count of recursion, -1 means never end.

@@ -1,4 +1,4 @@
-exports = class BuyerInfo {
+module.exports = class SellerInfo {
   constructor(id, name, company, address, contact) {
     this.id = id
     this.name = name

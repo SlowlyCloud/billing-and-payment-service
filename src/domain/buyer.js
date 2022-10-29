@@ -1,4 +1,4 @@
-exports = class SellerInfo {
+exports = class Buyer {
   constructor(id, name, company, address, contact) {
     this.id = id
     this.name = name
@@ -6,5 +6,4 @@ exports = class SellerInfo {
     this.address = address
     this.contact = contact
   }
-
 }
