@@ -43,6 +43,9 @@ jobs:
             server_auth_iss=${{secrets.SERVER_AUTH_ISS}}
             database_mongo_name=${{secrets.MONGO_DB_NAME}}
             database_mongo_uri=${{secrets.MONGO_URI}}
+            chain_eth_network_name={{secrets.BC_ETH_NET_NAME}}
+            chain_eth_network_chainId={{secrets.BC_ETH_NET_CHAINID}}
+            chain_eth_infura_apiKey={{secrets.BC_ETH_INFURA_APIKEY}}
     
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3

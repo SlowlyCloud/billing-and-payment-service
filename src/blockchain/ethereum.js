@@ -15,7 +15,7 @@ const conf = {
 }
 
 const p = ethers.providers.getDefaultProvider(conf.network, conf.options)
-log.trace('chain delegation of ethereum loaded with configuration: %s', conf)
+log.trace('chain delegation of ethereum loaded with configuration: %s', JSON.stringify(conf))
 
 module.exports = {
   BigNumber,
