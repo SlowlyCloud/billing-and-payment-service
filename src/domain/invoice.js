@@ -8,7 +8,7 @@ class PaymentInfo {
     this.chain = chain
     this.currency = currency
     this.unit = unit
-    this.amount = amount
+    this.amount = new Number(amount)
     this.from = from
     this.to = to
   }
@@ -16,13 +16,12 @@ class PaymentInfo {
 
 class Invoice {
   constructor(paymentInfo, items, totalAmountPaid, note) {
-    this.id = undefined
     this.items = items
     this.paymentInfo = paymentInfo
     this.note = note
     this.status = "unconfirmed"
     this.paidAt = undefined
-    this.totalAmountPaid = totalAmountPaid
+    this.totalAmountPaid = new Number(totalAmountPaid)
     this.tip = 0
     this.meta = new Meta()
   }
@@ -45,8 +44,7 @@ class Invoice {
 
     this.paidAt = new Date()
     this.status = 'completed'
-    this.meta.update()
-    
+
     log.debug('order confirmed by %s, order: %s', this.paymentInfo.chain, this)
 
     return this.status === 'completed' ? true : false

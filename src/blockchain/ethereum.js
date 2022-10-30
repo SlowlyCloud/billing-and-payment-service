@@ -1,4 +1,4 @@
-const ethers = require('ethers')
+const { BigNumber, ethers } = require('ethers')
 const config = require('../config')
 const log = require('../logging')
 
@@ -18,6 +18,7 @@ const p = ethers.providers.getDefaultProvider(conf.network, conf.options)
 log.trace('chain delegation of ethereum loaded with configuration: %s', conf)
 
 module.exports = {
+  BigNumber,
   transaction: {
     // Note: waitUntilConfirm is a blocking function.
     // confirms: If confirms is 0, this method is non-blocking and 

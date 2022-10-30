@@ -7,18 +7,21 @@ module.exports = require('express').Router()
     const address = req.query.wallet
     let timePeriod = req.query.start && req.query.end ?
       { start: new Date(req.query.start), end: new Date(req.query.end) } : null
-    let pageble = new Pageble(req.query.pageSize || 10, req.query.pageNum || 0)
+    let pageable = new Pageble(
+      parseInt(req.query.pageSize) || 10,
+      parseInt(req.query.pageNum) || 1
+    )
 
-    const result = await db.invoice.listByWallet(address, timePeriod, pageble)
+    const result = await db.invoice.listByWallet(address, timePeriod, pageable)
 
     res.send({
-      count: records ? records.length : 0,
+      total: result.total,
       records: result.records,
       timePeriod: timePeriod,
       nextPage: {
-        total: result.total,
-        size: req.query.pageSize || 10,
-        number: req.query.pageNum + 1
+        size: pageable.size,
+        number: pageable.size * pageable.number > result.total ?
+          pageable.number : pageable.number + 1
       }
     })
   })

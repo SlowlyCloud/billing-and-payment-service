@@ -15,7 +15,7 @@ let db = toSyncFn(async () => {
         return db
     } catch (e) {
         await client.close()
-        throw new Error('mongo starting failed: %s', e)
+        throw new Error('mongo starting failed: ' + e)
     }
 })
 

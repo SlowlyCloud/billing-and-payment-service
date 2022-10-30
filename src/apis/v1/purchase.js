@@ -9,16 +9,15 @@ module.exports = require('express').Router()
     const o = req.body
     log.debug({ req, reqBody: req.body }, 'new purchase request')
 
-    const paymentInfo = new PaymentInfo(o.paymentInfo.txId, 'ethereum', o.paymentInfo.currency, o.paymentInfo.unit, o.paymentInfo.from, o.paymentInfo.to)
+    const paymentInfo = new PaymentInfo(o.paymentInfo.txId, 'ethereum', o.paymentInfo.currency, o.paymentInfo.unit, o.paymentInfo.amount, o.paymentInfo.from, o.paymentInfo.to)
     let invoice = new Invoice(paymentInfo, o.items, o.totalAmountPaid, o.note)
-    await db.invoice.save(invoice)
+    const id = await db.invoice.save(invoice)
 
     log.info('new invoice charging: %s', invoice)
-    if (await invoice.confirms(comfirms, timeout)) {
-      const result = await db.invoice.updateById(invoice.id, invoice)
-      return res.send(result)
+    if (await invoice.confirms(comfirms, timeout) && await db.invoice.updateById(id, invoice)) {
+      return res.send(await db.invoice.findOneById(id))
     } else {
-      res.status(400).send({
+      return res.status(400).send({
         invoice,
         error: 'Invoice created but transaction confirmation faild'
       })
