@@ -8,7 +8,7 @@ class PaymentInfo {
     this.chain = chain
     this.currency = currency
     this.unit = unit
-    this.amount = new Number(amount)
+    this.amount = parseFloat(amount)
     this.from = from
     this.to = to
   }
@@ -21,7 +21,7 @@ class Invoice {
     this.note = note
     this.status = "unconfirmed"
     this.paidAt = undefined
-    this.totalAmountPaid = new Number(totalAmountPaid)
+    this.totalAmountPaid = parseFloat(totalAmountPaid)
     this.tip = 0
     this.meta = new Meta()
   }
