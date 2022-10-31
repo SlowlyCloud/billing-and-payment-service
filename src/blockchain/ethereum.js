@@ -3,7 +3,10 @@ const config = require('../config')
 const log = require('../logging')
 
 const conf = {
-  network: config.blockchain.ethereum.network,
+  network: {
+    name: config.blockchain.ethereum.network.name,
+    chainId: parseInt(config.blockchain.ethereum.network.chainId)
+  },
   // refer to: https://docs.ethers.io/v5/api/providers/
   options: {
     alchemy: config.blockchain.ethereum.providers.alchemy.token,
