@@ -2,14 +2,27 @@ const { resolve } = require('path');
 const { readdirSync } = require('fs');
 const deasync = require('deasync')
 
-module.exports.Meta = class Meta {
+class Meta {
     constructor() {
         this.createdAt = new Date()
         this.updatedAt = null
         this.deletedAt = null
         this.version = 0
     }
+
+    update = () => {
+        this.version = this.version++
+        this.updatedAt = new Date()
+    }
 }
+
+class Pageble {
+    constructor(pageSize, pageNum) {
+        this.size = pageSize
+        this.number = pageNum
+    }
+}
+
 
 // deep Number: count of recursion, -1 means never end.
 // type String: "1" only file, "2" only dir, "0" both
@@ -30,13 +43,12 @@ const getDirs = (dir, type, deep) => {
     })
     return Array.prototype.concat(...files)
 }
-module.exports.getDirs = getDirs
 
-module.exports.authCode = (length = 8) => {
+const authCode = (length = 8) => {
     return Math.random().toString(36).substring(2, length + 2);
 }
 
-module.exports.toSyncFn = (asyncFn) => {
+const toSyncFn = (asyncFn) => {
     let done = false
     let res = undefined
     asyncFn()
@@ -52,5 +64,13 @@ module.exports.toSyncFn = (asyncFn) => {
     return res
 }
 
-module.exports.sleep = (ms) => deasync.sleep(ms)
+const sleep = (ms) => deasync.sleep(ms)
 
+module.exports = {
+    Meta,
+    Pageble,
+    getDirs,
+    authCode,
+    toSyncFn,
+    sleep
+}

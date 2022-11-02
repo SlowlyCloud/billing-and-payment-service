@@ -22,8 +22,6 @@ jobs:
   build-push:
     runs-on: ubuntu-latest
     environment: production
-    outputs:
-      image_tag: ${{ steps.build-image.outputs.image_tag }}
 
     steps:
       - uses: actions/checkout@v3
@@ -43,6 +41,9 @@ jobs:
             server_auth_iss=${{secrets.SERVER_AUTH_ISS}}
             database_mongo_name=${{secrets.MONGO_DB_NAME}}
             database_mongo_uri=${{secrets.MONGO_URI}}
+            chain_eth_network_name=${{secrets.BC_ETH_NET_NAME}}
+            chain_eth_network_chainId=${{secrets.BC_ETH_NET_CHAINID}}
+            chain_eth_infura_apiKey=${{secrets.BC_ETH_INFURA_APIKEY}}
     
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3
@@ -66,7 +67,6 @@ jobs:
           # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image_tag::$IMAGE_TAG"
 
   deploy:
     needs: build-push
@@ -104,7 +104,7 @@ jobs:
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ needs.build-push.outputs.image_tag }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.10

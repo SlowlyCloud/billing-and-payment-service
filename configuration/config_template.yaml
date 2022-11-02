@@ -12,3 +12,17 @@ database:
   mongo:
     name: {{database_mongo_name}}
     uri: {{database_mongo_uri}}
+
+blockchain:
+  ethereum:
+    network: 
+      name: {{chain_eth_network_name}}
+      chainId: {{chain_eth_network_chainId}}
+    providers:
+      quorum: 1
+      alchemy:
+        token:
+      etherscan:
+        token:
+      infura: {{chain_eth_infura_apiKey}}
+      pocket:

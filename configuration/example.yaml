@@ -13,13 +13,16 @@ database:
     name: customer-communication-service
     uri: mongodb://root:example@localhost:27017/admin
   
-emailServer:
-  host: smtpout.secureserver.net
-  user: no-reply@example.com
-  pass: 12345678
-  
-telegramServer:
-  bot:
-    username: 123
-    token: dsfsafsf
-    webhook: example.com/tg/123/webhook
+blockchain:
+  ethereum:
+    network: 
+      name: goerli
+      chainId: 5
+    providers:
+      quorum: 1
+      alchemy:
+        token:
+      etherscan:
+        token:
+      infura: 123456
+      pocket:
