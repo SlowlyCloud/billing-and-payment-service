@@ -9,7 +9,7 @@ module.exports = require('express').Router()
     const o = req.body
     log.debug({ req, reqBody: req.body }, 'new purchase request')
 
-    if (!o.paymentInfo.txId) return res.sendStatus(400).send('transaction id is missing')
+    if (!o.paymentInfo.txId) return res.status(400).send('transaction id is missing')
 
     let invoice = null
     let id = null
