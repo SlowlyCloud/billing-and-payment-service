@@ -9,9 +9,21 @@ module.exports = require('express').Router()
     const o = req.body
     log.debug({ req, reqBody: req.body }, 'new purchase request')
 
-    const paymentInfo = new PaymentInfo(o.paymentInfo.txId, 'ethereum', o.paymentInfo.currency, o.paymentInfo.unit, o.paymentInfo.amount, o.paymentInfo.from, o.paymentInfo.to)
-    let invoice = new Invoice(paymentInfo, o.items, o.totalAmountPaid, o.note)
-    const id = await db.invoice.save(invoice)
+    if (!o.paymentInfo.txId) return res.sendStatus(400).send('transaction id is missing')
+
+    let invoice = null
+    let id = null
+
+    const exist = await db.invoice.findOneByTxId(o.paymentInfo.txId)
+    if (!exist) {
+      const paymentInfo = new PaymentInfo(o.paymentInfo.txId, 'ethereum', o.paymentInfo.currency, o.paymentInfo.unit, o.paymentInfo.amount, o.paymentInfo.from, o.paymentInfo.to)
+      invoice = new Invoice(paymentInfo, o.items, o.totalAmountPaid, o.note)
+      id = await db.invoice.save(invoice)
+    } else {
+      log.info('invoice of transaction id: $s already exist, confirming payment status')
+      invoice = Invoice.from(exist)
+      id = exist._id
+    }
 
     log.info('new invoice charging: %s', invoice)
     if (await invoice.confirms(comfirms, timeout) && await db.invoice.updateById(id, invoice)) {
@@ -19,7 +31,7 @@ module.exports = require('express').Router()
     } else {
       return res.status(400).send({
         invoice,
-        error: 'Invoice created but transaction confirmation faild'
+        error: 'Invoice created but transaction confirmation failed'
       })
     }
   })

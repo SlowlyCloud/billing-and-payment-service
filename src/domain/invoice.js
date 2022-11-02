@@ -12,6 +12,18 @@ class PaymentInfo {
     this.from = from
     this.to = to
   }
+
+  static from(fromDB) {
+    let res = new PaymentInfo()
+    res.txId = fromDB.txId
+    res.chain = fromDB.chain
+    res.currency = fromDB.currency
+    res.unit = fromDB.unit
+    res.amount = fromDB.amount
+    res.from = fromDB.from
+    res.to = fromDB.to
+    return res
+  }
 }
 
 class Invoice {
@@ -24,6 +36,19 @@ class Invoice {
     this.totalAmountPaid = parseFloat(totalAmountPaid)
     this.tip = 0
     this.meta = new Meta()
+  }
+  
+  static from(fromDB) {
+    let res = new Invoice()
+    res.items = fromDB.items
+    res.paymentInfo = PaymentInfo.from(fromDB.paymentInfo)
+    res.note = fromDB.note
+    res.status = fromDB.status
+    res.paidAt = fromDB.paidAt
+    res.totalAmountPaid = fromDB.totalAmountPaid
+    res.tip = fromDB.tip
+    res.meta = fromDB.meta
+    return res
   }
 
   confirms = async (confirms, timeout) => {
