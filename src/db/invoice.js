@@ -1,5 +1,5 @@
 const log = require('../logging')
-const { db } = require('./mongo')
+const { db,ObjectId } = require('./mongo')
 
 const collname = 'invoices'
 
@@ -67,9 +67,9 @@ const listByWallet = async (address, timePeriod, pageable) => {
 const findOneById = async (id) => {
   const result = await db
     .collection(collname)
-    .findOne({ _id: id })
+    .findOne({ _id: new ObjectId(id) })
 
-  log.trace('%s find one by id, id: %s, res: %s', id, result)
+  log.trace('%s find one by id, id: %s, res: %s',collname, id, result)
   return result
 }
 
@@ -78,7 +78,7 @@ const findOneByTxId = async (txId) => {
     .collection(collname)
     .findOne({ 'paymentInfo.txId': txId })
 
-  log.trace('%s find one by txId, txId: %s, res: %s', txId, result)
+  log.trace('%s find one by txId, txId: %s, res: %s',collname, txId, result)
   return result
 }
 
