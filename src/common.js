@@ -16,7 +16,7 @@ class Meta {
     }
 }
 
-class Pageble {
+class Pageable {
     constructor(pageSize, pageNum) {
         this.size = pageSize
         this.number = pageNum
@@ -68,7 +68,7 @@ const sleep = (ms) => deasync.sleep(ms)
 
 module.exports = {
     Meta,
-    Pageble,
+    Pageable,
     getDirs,
     authCode,
     toSyncFn,
