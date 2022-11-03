@@ -1,5 +1,5 @@
 const log = require('../logging')
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb')
 const { toSyncFn } = require('../common')
 const config = require('../config')
 
@@ -20,6 +20,7 @@ let db = toSyncFn(async () => {
 })
 
 module.exports = {
+    ObjectId,
     db: db,
     client: client
 }
