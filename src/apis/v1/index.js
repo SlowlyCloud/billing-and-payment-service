@@ -11,7 +11,7 @@ if (config.server.env === 'development' && config.server.auth.skip) {
 
   router.use(async (req, res, next) => {
     const token = (req.get('Authorization') || '').replace('Bearer ', '')
-    if (!token) return res.status(403).send("Access Denied")
+    if (!token) return res.sendStatus(401)
     const decoded = await new Promise((res, rej) => {
       jwt.verify(token, kepPem, {
         algorithms: config.server.auth.algorithms,
@@ -19,7 +19,7 @@ if (config.server.env === 'development' && config.server.auth.skip) {
         issuer: config.server.auth.issuer
       }, (err, decoded) => {
         decoded ? res(decoded) : (() => {
-          err.statusCode = 403
+          err.statusCode = 401
           rej(err)
         })()
       })
