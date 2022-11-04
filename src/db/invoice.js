@@ -3,10 +3,14 @@ const { db,ObjectId } = require('./mongo')
 
 const collname = 'invoices'
 
+function readabilityDecimal(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 const save = async (invoice) => {
   const res = await db
     .collection(collname)
-    .insertOne(invoice)
+    .insertOne(readabilityDecimal(invoice))
 
   log.trace('%s insert one, obj: %s, res: %s', collname, invoice, res)
   return res.insertedId
@@ -23,7 +27,7 @@ const updateById = async (id, invoice) => {
       { _id: id },
       {
         $set: {
-          ...invoice,
+          ...readabilityDecimal(invoice),
           'meta.updatedAt': new Date()
         },
         $inc: { 'meta.version': 1 }
