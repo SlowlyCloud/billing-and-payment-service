@@ -4,12 +4,16 @@ const db = require('../../db')
 module.exports = require('express').Router()
 
   .post('/ethereum/sync', async (req, res) => {
-    const comfirms = req.query.minimumConfirms
+    const confirms = req.query.minimumConfirms
     const timeout = req.query.waitingFor
     const o = req.body
     log.debug({ req, reqBody: req.body }, 'new purchase request')
 
     if (!o.paymentInfo.txId) return res.status(400).send('transaction id is missing')
+
+    o.paymentInfo.chain = o.paymentInfo.chain || 'ethereum'
+    o.paymentInfo.currency = o.paymentInfo.currency || 'ETH'
+    o.paymentInfo.unit = o.paymentInfo.unit || 'ether'
 
     let invoice = null
     let id = null
@@ -26,11 +30,14 @@ module.exports = require('express').Router()
     }
 
     log.info('new invoice charging: %s', invoice)
-    if (await invoice.confirms(comfirms, timeout) && await db.invoice.updateById(id, invoice)) {
-      return res.send(await db.invoice.findOneById(id))
+    const succeed = await invoice.confirms(confirms, timeout)
+    await db.invoice.updateById(id, invoice)
+    const result = res.send(await db.invoice.findOneById(id))
+    if (succeed) {
+      return result
     } else {
       return res.status(400).send({
-        invoice,
+        result,
         error: 'Invoice created but transaction confirmation failed'
       })
     }

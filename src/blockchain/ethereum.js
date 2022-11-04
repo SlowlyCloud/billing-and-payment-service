@@ -31,7 +31,12 @@ module.exports = {
     // timeoutMs: number of millisecond for unblocking.
     // results: https://docs.ethers.io/v5/api/providers/types/#providers-TransactionReceipt
     waitUntilConfirm: async (tx, confirms, timeoutMs) => {
-      return await p.waitForTransaction(tx, confirms, timeoutMs)
+      const detail = p.getTransaction(tx)
+      const receipt = p.waitForTransaction(tx, confirms, timeoutMs)
+      return {
+        receipt: await receipt,
+        detail: await detail
+      }
     }
   }
 }
