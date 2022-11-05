@@ -6,11 +6,15 @@ const validations = {
   '/ethereum/sync': (req, res) => {
     const o = req.body
 
-    if (!o.paymentInfo.txId)
-      return res.status(400).send('transaction id is missing')
+    if (!o.paymentInfo.txId) {
+      res.status(400).send('transaction id is missing')
+      return 1
+    }
 
-    if (!validation.isHash(o.paymentInfo.txId))
-      return res.status(400).send('paymentInfo.txId is invalid.')
+    if (!validation.isHash(o.paymentInfo.txId)) {
+      res.status(400).send('paymentInfo.txId is invalid.')
+      return 1
+    }
   }
 }
 
