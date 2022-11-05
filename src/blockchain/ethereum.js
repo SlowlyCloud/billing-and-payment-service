@@ -27,9 +27,8 @@ module.exports = {
   BigNumber,
   validation: {
     isHash(hx) {
-      try { formatter.hash(hx) } catch (e) {
-        return false
-      }
+      try { formatter.hash(hx) }
+      catch (e) { return false }
       return true
     }
   },
@@ -44,14 +43,12 @@ module.exports = {
     waitUntilConfirm: async (tx, confirms, timeoutMs) => {
       const detail = p.getTransaction(tx)
       const receipt = p.waitForTransaction(tx, confirms, timeoutMs)
-      let res, err
-      try { res = await Promise.all([detail, receipt]) } catch (e) { err = e }
-      finally {
-        return err ? Either.fromE(err) : Either.fromR({
-          detail: res[0],
-          receipt: res[1]
-        })
-      }
+      return Promise.all([detail, receipt])
+        .then(v => Either.fromR({
+          detail: v[0],
+          receipt: v[1]
+        }))
+        .catch(e => Either.fromE(e))
     }
   }
 }
