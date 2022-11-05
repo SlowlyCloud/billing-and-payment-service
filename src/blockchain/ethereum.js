@@ -47,7 +47,10 @@ module.exports = {
       let res, err
       try { res = await Promise.all([detail, receipt]) } catch (e) { err = e }
       finally {
-        return err ? Either.fromE(err) : Either.fromR(res)
+        return err ? Either.fromE(err) : Either.fromR({
+          detail: res[0],
+          receipt: res[1]
+        })
       }
     }
   }
