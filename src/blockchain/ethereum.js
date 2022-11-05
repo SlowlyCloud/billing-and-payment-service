@@ -1,6 +1,9 @@
 const { BigNumber, ethers } = require('ethers')
+const { Formatter } = require('@ethersproject/providers')
 const config = require('../config')
+const { Either } = require('../common')
 const log = require('../logging')
+const formatter = new Formatter()
 
 const conf = {
   network: {
@@ -22,6 +25,14 @@ log.trace('chain delegation of ethereum loaded with configuration: %s', JSON.str
 
 module.exports = {
   BigNumber,
+  validation: {
+    isHash(hx) {
+      try { formatter.hash(hx) } catch (e) {
+        return false
+      }
+      return true
+    }
+  },
   transaction: {
     // Note: waitUntilConfirm is a blocking function.
     // confirms: If confirms is 0, this method is non-blocking and 
@@ -33,9 +44,10 @@ module.exports = {
     waitUntilConfirm: async (tx, confirms, timeoutMs) => {
       const detail = p.getTransaction(tx)
       const receipt = p.waitForTransaction(tx, confirms, timeoutMs)
-      return {
-        receipt: await receipt,
-        detail: await detail
+      let res, err
+      try { res = await Promise.all([detail, receipt]) } catch (e) { err = e }
+      finally {
+        return err ? Either.fromE(err) : Either.fromR(res)
       }
     }
   }

@@ -67,36 +67,45 @@ class Invoice {
   confirms = async (confirms, timeout) => {
     if (this.isCompleted()) return true
 
-    let result = await ethereum
+    let res = await ethereum
       .transaction
       .waitUntilConfirm(this.paymentInfo.txId, confirms, timeout)
 
-    log.info({
-      order: this,
-      receipt: result.receipt,
-      detail: result.detail
-    }, 'an order has been confirmed')
+    res.match(
+      (result) => {
+        log.info({
+          order: this,
+          receipt: result.receipt,
+          detail: result.detail
+        }, 'an order has been confirmed')
 
-    this._validate(result.receipt)
+        this._validate(result.receipt)
 
-    this.paymentInfo.amount = new Decimal(
-      result.detail.gasLimit
-        .mul(result.detail.gasPrice)
-        .add(result.detail.value)
-        .toString()
-    ).div(ETHER_WEI)
+        this.paymentInfo.amount = new Decimal(
+          result.detail.gasLimit
+            .mul(result.detail.gasPrice)
+            .add(result.detail.value)
+            .toString()
+        ).div(ETHER_WEI)
 
-    // check if amount is equaled with totalAmountPaid in acceptable deviation.
-    this.tip = this.paymentInfo.amount.sub(this.totalAmountPaid)
-    if (this.tip.lt(new Decimal(0))) {
-      this.status = 'deficient'
-    } else {
-      this.status = 'completed'
-    }
+        // check if amount is equaled with totalAmountPaid in acceptable deviation.
+        this.tip = this.paymentInfo.amount.sub(this.totalAmountPaid)
+        if (this.tip.lt(new Decimal(0))) {
+          this.status = 'deficient'
+        } else {
+          this.status = 'completed'
+        }
 
-    this.paidAt = new Date()
+        this.paidAt = new Date()
 
-    log.debug('order confirmed by %s, order: %s', this.paymentInfo.chain, this)
+        log.debug('order confirmed by %s, order: %s', this.paymentInfo.chain, this)
+      },
+
+      (error) => {
+        error.statusCode = 400
+        throw error
+      }
+    )
 
     return this.isCompleted()
   }

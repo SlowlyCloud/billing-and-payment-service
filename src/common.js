@@ -23,6 +23,32 @@ class Pageable {
     }
 }
 
+class Either {
+    constructor() {
+        this.result = null
+        this.error = null
+        this._hasError = false
+    }
+
+    static fromR = (result) => {
+        let either = new Either()
+        either.result = result
+        either._hasError = false
+        return either
+    }
+
+    static fromE = (error) => {
+        let either = new Either()
+        either.error = error
+        either._hasError = true
+        return either
+    }
+
+    match = (r, e) => {
+        this._hasError ? e(this.error) : r(this.result)
+    }
+}
+
 
 // deep Number: count of recursion, -1 means never end.
 // type String: "1" only file, "2" only dir, "0" both
@@ -69,6 +95,7 @@ const sleep = (ms) => deasync.sleep(ms)
 module.exports = {
     Meta,
     Pageable,
+    Either,
     getDirs,
     authCode,
     toSyncFn,
