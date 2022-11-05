@@ -1,9 +1,19 @@
 const log = require('../../logging')
 const { Invoice, PaymentInfo } = require('../../domain/invoice')
 const db = require('../../db')
-module.exports = require('express').Router()
+const { validation } = require('../../blockchain/ethereum')
+const validations = {
+  '/ethereum/sync': (req, res) => {
+    if (!validation.isHash(req)) {
+      res.status(400).send('paymentInfo.txId is invalid.')
+      return false
+    }
+  }
+}
 
+module.exports = require('express').Router()
   .post('/ethereum/sync', async (req, res) => {
+    if (!validations[req.route.path](req, res)) return
     const confirms = req.query.minimumConfirms
     const timeout = req.query.waitingFor
     const o = req.body
