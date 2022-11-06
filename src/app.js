@@ -12,7 +12,6 @@ const apisFolderName = 'apis'
 const port = config.server.port
 const basePath = config.server.basePath
 
-app.use(cors(config.server.cors))
 app.use((req, res, next) => {
   log.debug({
     direction: 'inbound',
@@ -25,6 +24,7 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use(cors(config.server.cors))
 
 app.use(bodyParser.json())
 
