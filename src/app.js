@@ -1,6 +1,7 @@
 const express = require('express')
 require('express-async-errors')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const log = require('./logging')
 const config = require('./config')
 const { getDirs, toSyncFn } = require('./common')
@@ -11,6 +12,7 @@ const apisFolderName = 'apis'
 const port = config.server.port
 const basePath = config.server.basePath
 
+app.use(cors(config.server.cors))
 app.use((req, res, next) => {
   log.debug({
     direction: 'inbound',
@@ -22,6 +24,7 @@ app.use((req, res, next) => {
   }))
   next()
 })
+
 
 app.use(bodyParser.json())
 

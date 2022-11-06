@@ -7,6 +7,11 @@ server:
     privateKey: {{server_auth_pk}}
     audience: {{server_auth_aud}}
     issuer: {{server_auth_iss}}
+  cors:
+    origin: {{server_cors_origin}}
+    credentials: {{server_cors_credentials}}
+    methods: {{server_cors_methods}}
+    allowedHeaders: {{server_cors_headers}}
 
 database:
   mongo:
