@@ -44,6 +44,11 @@ jobs:
             chain_eth_network_name=${{secrets.BC_ETH_NET_NAME}}
             chain_eth_network_chainId=${{secrets.BC_ETH_NET_CHAINID}}
             chain_eth_infura_apiKey=${{secrets.BC_ETH_INFURA_APIKEY}}
+
+            server_cors_origin=${{secrets.CORS_ORIGIN}}
+            server_cors_credentials=${{secrets.CORS_CRED}}
+            server_cors_methods=${{secrets.CORS_METHODS}}
+            server_cors_headers=${{secrets.CORS_HEADERS}}
     
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3

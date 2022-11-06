@@ -1,6 +1,7 @@
 const express = require('express')
 require('express-async-errors')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const log = require('./logging')
 const config = require('./config')
 const { getDirs, toSyncFn } = require('./common')
@@ -22,6 +23,8 @@ app.use((req, res, next) => {
   }))
   next()
 })
+
+app.use(cors(config.server.cors))
 
 app.use(bodyParser.json())
 
