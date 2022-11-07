@@ -2,9 +2,10 @@ const express = require('express')
 require('express-async-errors')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const uuid = require('uuid')
 const log = require('./logging')
 const config = require('./config')
-const { getDirs, toSyncFn } = require('./common')
+const { Context, getDirs, toSyncFn } = require('./common')
 const app = express()
 
 // config
@@ -12,15 +13,25 @@ const apisFolderName = 'apis'
 const port = config.server.port
 const basePath = config.server.basePath
 
+
 app.use((req, res, next) => {
-  log.debug({
+  req.ctx = Context.fromRequestId(req.get('X-Request-ID') || uuid.v4())
+  req.log = req.ctx.log
+  res.setHeader('X-Request-Id', req.ctx.reqId)
+  next()
+})
+
+app.use((req, res, next) => {
+  req.log.debug({
     direction: 'inbound',
     req: req
   })
-  res.on("finish", () => log.debug({
-    direction: 'outbound',
-    res: res
-  }))
+  res.on("finish", () => {
+    req.log.debug({
+      direction: 'outbound',
+      res: res
+    })
+  })
   next()
 })
 
@@ -46,7 +57,7 @@ getDirs(path, '1', 1).forEach(file => {
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).send(err.message)
-  log.error({
+  req.log.error({
     err: err,
     req: req,
     res, res

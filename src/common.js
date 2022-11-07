@@ -49,6 +49,19 @@ class Either {
     }
 }
 
+class Context {
+    constructor() {
+        this.log = Context._defaultLogger
+    }
+    static _defaultLogger = require('./logging')
+    static fromRequestId = (reqId) => {
+        const c = new Context()
+        c.reqId = reqId
+        c.log = Context._defaultLogger.child({ reqId })
+        return c
+    }
+}
+
 
 // deep Number: count of recursion, -1 means never end.
 // type String: "1" only file, "2" only dir, "0" both
@@ -96,6 +109,7 @@ module.exports = {
     Meta,
     Pageable,
     Either,
+    Context,
     getDirs,
     authCode,
     toSyncFn,

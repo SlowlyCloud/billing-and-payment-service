@@ -24,7 +24,7 @@ module.exports = require('express').Router()
     const confirms = req.query.minimumConfirms
     const timeout = req.query.waitingFor
     const o = req.body
-    log.debug({ req, reqBody: req.body }, 'new purchase request')
+    req.log.debug({ req, reqBody: req.body }, 'new purchase request')
 
     o.paymentInfo.chain = o.paymentInfo.chain || 'ethereum'
     o.paymentInfo.currency = o.paymentInfo.currency || 'ETH'
@@ -33,7 +33,7 @@ module.exports = require('express').Router()
     let invoice = null
     let id = null
 
-    const exist = await db.invoice.findOneByTxId(o.paymentInfo.txId)
+    const exist = await db.invoice.findOneByTxId(req.ctx, o.paymentInfo.txId)
     if (!exist) {
       const paymentInfo = new PaymentInfo(
         o.paymentInfo.txId,
@@ -45,19 +45,19 @@ module.exports = require('express').Router()
         o.paymentInfo.to
       )
       invoice = new Invoice(paymentInfo, o.items, o.totalAmountPaid, o.note)
-      id = await db.invoice.save(invoice)
+      id = await db.invoice.save(req.ctx, invoice)
     } else {
-      log.info('invoice of transaction id: $s already exist, confirming payment status')
+      req.log.info('invoice of transaction id: $s already exist, confirming payment status')
       invoice = Invoice.from(exist)
       id = exist._id
     }
 
-    log.info('new invoice charging: %s', invoice)
-    const succeed = await invoice.confirms(confirms, timeout)
-    await db.invoice.updateById(id, invoice)
-    const result = res.send(await db.invoice.findOneById(id))
+    req.log.info('new invoice charging: %s', invoice)
+    const succeed = await invoice.confirms(req.ctx, confirms, timeout)
+    await db.invoice.updateById(req.ctx, id, invoice)
+    const result = await db.invoice.findOneById(req.ctx, id)
     if (succeed) {
-      return result
+      return res.send(result)
     } else {
       return res.status(400).send({
         result,

@@ -1,6 +1,5 @@
 const { Meta } = require("../common")
 const ethereum = require('../blockchain/ethereum')
-const log = require('../logging')
 const { Decimal } = require('decimal.js')
 
 const ETHER_WEI = new Decimal(1000000000000000000)
@@ -58,13 +57,17 @@ class Invoice {
 
   _validate = (txReceipt) => {
     if (this.paymentInfo.from !== txReceipt.from ||
-      this.paymentInfo.to !== txReceipt.to)
-      throw new Error('payment info of invoice is invalid')
+      this.paymentInfo.to !== txReceipt.to
+    ) {
+      let e = new Error('payment info of invoice is invalid')
+      e.statusCode = 400
+      throw e
+    }
   }
 
   isCompleted = () => this.status === 'completed'
 
-  confirms = async (confirms, timeout) => {
+  confirms = async (ctx, confirms, timeout) => {
     if (this.isCompleted()) return true
 
     let res = await ethereum
@@ -73,7 +76,7 @@ class Invoice {
 
     res.match(
       (result) => {
-        log.info({
+        ctx.log.info({
           order: this,
           receipt: result.receipt,
           detail: result.detail
@@ -98,7 +101,7 @@ class Invoice {
 
         this.paidAt = new Date()
 
-        log.debug('order confirmed by %s, order: %s', this.paymentInfo.chain, this)
+        ctx.log.debug('order confirmed by %s, order: %s', this.paymentInfo.chain, this)
       },
 
       (error) => {

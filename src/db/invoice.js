@@ -1,5 +1,5 @@
 const log = require('../logging')
-const { db,ObjectId } = require('./mongo')
+const { db, ObjectId } = require('./mongo')
 
 const collname = 'invoices'
 
@@ -7,16 +7,16 @@ function readabilityDecimal(obj) {
   return JSON.parse(JSON.stringify(obj))
 }
 
-const save = async (invoice) => {
+const save = async (ctx, invoice) => {
   const res = await db
     .collection(collname)
     .insertOne(readabilityDecimal(invoice))
 
-  log.trace('%s insert one, obj: %s, res: %s', collname, invoice, res)
+  ctx.log.trace('%s insert one, obj: %s, res: %s', collname, invoice, res)
   return res.insertedId
 }
 
-const updateById = async (id, invoice) => {
+const updateById = async (ctx, id, invoice) => {
   delete invoice._id
   delete invoice.meta
 
@@ -34,11 +34,11 @@ const updateById = async (id, invoice) => {
       }
     )
 
-  log.trace('%s update one, obj: %s, res: %s', collname, invoice, res)
+  ctx.log.trace('%s update one, obj: %s, res: %s', collname, invoice, res)
   return res
 }
 
-const listByWallet = async (address, timePeriod, pageable) => {
+const listByWallet = async (ctx, address, timePeriod, pageable) => {
   let filter = {}
   filter['paymentInfo.from'] = address
   if (timePeriod) {
@@ -60,7 +60,7 @@ const listByWallet = async (address, timePeriod, pageable) => {
     .limit(parseInt(pageable.size))
     .toArray()
 
-  log.trace('%s list many by address, count: %s res: %s', collname, count, res)
+  ctx.log.trace('%s list many by address, count: %s res: %s', collname, count, res)
 
   return {
     total: count,
@@ -68,21 +68,21 @@ const listByWallet = async (address, timePeriod, pageable) => {
   }
 }
 
-const findOneById = async (id) => {
+const findOneById = async (ctx, id) => {
   const result = await db
     .collection(collname)
     .findOne({ _id: new ObjectId(id) })
 
-  log.trace('%s find one by id, id: %s, res: %s',collname, id, result)
+  ctx.log.trace('%s find one by id, id: %s, res: %s', collname, id, result)
   return result
 }
 
-const findOneByTxId = async (txId) => {
+const findOneByTxId = async (ctx, txId) => {
   const result = await db
     .collection(collname)
     .findOne({ 'paymentInfo.txId': txId })
 
-  log.trace('%s find one by txId, txId: %s, res: %s',collname, txId, result)
+  ctx.log.trace('%s find one by txId, txId: %s, res: %s', collname, txId, result)
   return result
 }
 
