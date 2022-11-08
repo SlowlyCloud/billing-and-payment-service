@@ -25,7 +25,7 @@ if (config.server.env === 'development' && config.server.auth.skip) {
       })
     })
     req.jwt = decoded
-    log.trace('inbound request verified, token: %s, payload: %s', token, decoded)
+    req.log.trace('inbound request verified, token: %s, payload: %s', token, decoded)
     next()
   })
 
