@@ -2,8 +2,8 @@ name: Shipping to AWS ECS from Source Code
   
 on:
   workflow_dispatch:
-  push:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   
@@ -14,7 +14,7 @@ env:
   ECR_REPOSITORY: billing-and-payment-service
   ECS_SERVICE: billing-and-payment-service
   ECS_CLUSTER: flipgod-dev
-  ECS_TASK_DEFINITION: billing-and-payment-service/ecs-dev/task-definition.json
+  ECS_TASK_DEFINITION: billing-and-payment-service/ecs/dev/task-definition.json
   CONTAINER_NAME: billing-and-payment-service
 
 jobs:
