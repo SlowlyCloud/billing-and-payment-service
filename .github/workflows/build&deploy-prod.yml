@@ -2,10 +2,8 @@ name: Shipping to AWS ECS from Source Code
   
 on:
   workflow_dispatch:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  tags:        
+    - v(\d\.){2}\d.*
   
 
 env:
