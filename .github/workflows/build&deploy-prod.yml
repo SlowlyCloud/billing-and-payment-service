@@ -3,7 +3,7 @@ name: Shipping to AWS ECS from Source Code
 on:
   workflow_dispatch:
   tags:        
-    - v(\d\.){2}\d.*
+    - v[0-9].[0-9]+.[0-9]+
   
 
 env:
