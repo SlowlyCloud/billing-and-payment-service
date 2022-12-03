@@ -9,7 +9,7 @@ on:
   
 
 env:
-  APP_ENV: dev
+  APP_ENV: development
   AWS_REGION: us-west-2
   ECR_REPOSITORY: billing-and-payment-service
   ECS_SERVICE: bps
