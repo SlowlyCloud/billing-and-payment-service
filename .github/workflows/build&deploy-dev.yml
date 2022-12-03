@@ -19,7 +19,7 @@ env:
 
 jobs:
 
-  build-push:
+  deploy:
     runs-on: ubuntu-latest
     environment: dev
 
@@ -74,11 +74,6 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-  deploy:
-    needs: build-push
-    runs-on: ubuntu-latest
-    environment: dev
-    steps:
       - name: Generate token for checkout
         id: generate_token
         uses: tibdex/github-app-token@v1
@@ -92,13 +87,6 @@ jobs:
           repository: 'SlowlyCloud/aws-deployment'
           ref: 'master'
           token: ${{ steps.generate_token.outputs.token }}
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1.7.0
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
