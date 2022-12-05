@@ -38,7 +38,7 @@ const updateById = async (ctx, id, invoice) => {
   return res
 }
 
-const listByWallet = async (ctx, address, timePeriod, pageable) => {
+const listByWallet = async (ctx, address, timePeriod, pageable,sort) => {
   let filter = {}
   filter['paymentInfo.from'] = address
   if (timePeriod) {
@@ -53,9 +53,11 @@ const listByWallet = async (ctx, address, timePeriod, pageable) => {
     .countDocuments(filter)
   if (!count) return { total: 0, records: [] }
 
+  let createOrder = {createdAt:sort}
   let res = await db
     .collection(collname)
     .find(filter)
+    .sort(createOrder)
     .skip(parseInt(pageable.number > 0 ? (pageable.number - 1) * pageable.size : 0))
     .limit(parseInt(pageable.size))
     .toArray()

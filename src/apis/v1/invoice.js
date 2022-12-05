@@ -12,7 +12,14 @@ module.exports = require('express').Router()
       parseInt(req.query.pageNum) || 1
     )
 
-    const result = await db.invoice.listByWallet(req.ctx, address, timePeriod, pageable)
+      let sort = parseInt(req.query.sort) || 1
+      //Default ascending order
+      if (sort !== 1 && sort !== -1){
+          sort = 1
+          //return 400
+          //res.sendStatus(400)
+      }
+      const result = await db.invoice.listByWallet(req.ctx, address, timePeriod, pageable,sort)
 
     res.send({
       total: result.total,
