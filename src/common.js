@@ -105,12 +105,6 @@ const toSyncFn = (asyncFn) => {
 
 const sleep = (ms) => deasync.sleep(ms)
 
-const asc = 1
-const desc= -1
-
-let sortMeta = new Map()
-sortMeta.set("create", 0)
-sortMeta.set("update", 0)
 
 module.exports = {
     Meta,
@@ -120,8 +114,5 @@ module.exports = {
     getDirs,
     authCode,
     toSyncFn,
-    sleep,
-    asc,
-    desc,
-    sortMeta
+    sleep
 }

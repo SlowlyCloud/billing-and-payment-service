@@ -3,6 +3,10 @@ const ethereum = require('../blockchain/ethereum')
 const { Decimal } = require('decimal.js')
 
 const ETHER_WEI = new Decimal(1000000000000000000)
+const asc = 1
+const desc= -1
+const createdAt= "createdAt"
+const updatedAt= "updatedAt"
 
 class PaymentInfo {
   constructor(txId, chain, currency, unit, amount, from, to) {
@@ -53,6 +57,32 @@ class Invoice {
     res.tip = fromDB.tip
     res.meta = fromDB.meta
     return res
+  }
+
+  static sorts(sort) {
+    let sortFields = new Map()
+    if (!(sort === ''|| sort === null || sort === undefined)){
+      sort = sort.split(",")
+      for (let i = 0; i < sort.length; i++) {
+        switch (sort[i]) {
+          case "-create":
+            sortFields.set(createdAt, {createdAt:desc})
+            break
+          case "+create":
+            sortFields.set(createdAt, {createdAt:asc})
+            break
+          case "-update":
+            sortFields.set(updatedAt, {updatedAt:desc})
+            break
+          case "+update":
+            sortFields.set(updatedAt, {updatedAt:asc})
+            break
+          default:
+            break
+        }
+      }
+    }
+    return sortFields
   }
 
   _validate = (txReceipt) => {

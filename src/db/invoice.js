@@ -38,7 +38,7 @@ const updateById = async (ctx, id, invoice) => {
   return res
 }
 
-const listByWallet = async (ctx, address, timePeriod, pageable, sorts) => {
+const listByWallet = async (ctx, address, timePeriod, pageable, sortFields) => {
   let filter = {}
   filter['paymentInfo.from'] = address
   if (timePeriod) {
@@ -52,23 +52,6 @@ const listByWallet = async (ctx, address, timePeriod, pageable, sorts) => {
     .collection(collname)
     .countDocuments(filter)
   if (!count) return { total: 0, records: [] }
-
-  //Use map to prevent duplication
-  let sortFields = new Map()
-  if (sorts.size > 0){
-    for (let [key,val] of sorts.entries()) {
-      switch (key) {
-        case "create":
-          sortFields.set("create", {"createdAt":val})
-          break
-        case "update":
-          sortFields.set("update", {"updatedAt":val})
-          break
-        default:
-          break
-      }
-    }
-  }
 
   let res = await db.collection(collname).find(filter)
   if (sortFields.size >0){
