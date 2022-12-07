@@ -61,7 +61,7 @@ class Invoice {
     if (this.paymentInfo.from !== txReceipt.from ||
       this.paymentInfo.to !== txReceipt.to
     ) {
-      let e = new Errocr('payment info of invoice is invalid')
+      let e = new Error('payment info of invoice is invalid')
       e.statusCode = 400
       throw e
     }
