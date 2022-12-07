@@ -60,22 +60,22 @@ class Invoice {
   }
 
   static sorts(sort) {
-    let sortFields = new Map()
+    let sortFields = {}
     if (!(sort === ''|| sort === null || sort === undefined)){
       sort = sort.split(",")
       for (let i = 0; i < sort.length; i++) {
         switch (sort[i]) {
           case "-create":
-            sortFields.set(createdAt, {createdAt:desc})
+            sortFields.createdAt = desc
             break
           case "+create":
-            sortFields.set(createdAt, {createdAt:asc})
+            sortFields.createdAt = asc
             break
           case "-update":
-            sortFields.set(updatedAt, {updatedAt:desc})
+            sortFields.updatedAt = desc
             break
           case "+update":
-            sortFields.set(updatedAt, {updatedAt:asc})
+            sortFields.updatedAt = asc
             break
           default:
             break

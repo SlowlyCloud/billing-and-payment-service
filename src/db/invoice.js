@@ -53,13 +53,8 @@ const listByWallet = async (ctx, address, timePeriod, pageable, sortFields) => {
     .countDocuments(filter)
   if (!count) return { total: 0, records: [] }
 
-  let res = await db.collection(collname).find(filter)
-  if (sortFields.size >0){
-    for (let value of sortFields.values()) {
-      res.sort(value)
-    }
-  }
-  res.skip(parseInt(pageable.number > 0 ? (pageable.number - 1) * pageable.size : 0))
+  let res = await db.collection(collname).find(filter).sort(sortFields)
+      .skip(parseInt(pageable.number > 0 ? (pageable.number - 1) * pageable.size : 0))
       .limit(parseInt(pageable.size))
       .toArray()
 
