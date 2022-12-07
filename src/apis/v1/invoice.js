@@ -1,6 +1,6 @@
 const log = require('../../logging')
 const db = require('../../db')
-const { Pageable } = require('../../common')
+const { Pageable,asc,desc,sortMeta } = require('../../common')
 module.exports = require('express').Router()
 
   .get('/history', async (req, res) => {
@@ -12,16 +12,27 @@ module.exports = require('express').Router()
       parseInt(req.query.pageNum) || 1
     )
 
-      let sort = parseInt(req.query.sort) || 1
-      //Default ascending order
-      if (sort !== 1 && sort !== -1){
-          sort = 1
-          //return 400
-          //res.sendStatus(400)
+      let sort = req.query.sort
+      let sorts = new Map()
+      if (!(sort === ''|| sort === null || sort === undefined)){
+          sort = sort.split(",")
+          for (let i = 0; i < sort.length; i++) {
+              let s = sort[i]
+              if (s.length > 0 && (s.slice(0,1) === "+" || s.slice(0,1) === "-") && (sortMeta.has(s.slice(1)))){
+                  if (s.slice(0,1) === "+"){
+                      sorts.set(s.slice(1),asc)
+                  }else if (s.slice(0,1) === "-"){
+                      sorts.set(s.slice(1),desc)
+                  }
+              }else{
+                  return res.sendStatus(400)
+              }
+          }
       }
-      const result = await db.invoice.listByWallet(req.ctx, address, timePeriod, pageable,sort)
 
-    res.send({
+      const result = await db.invoice.listByWallet(req.ctx, address, timePeriod, pageable,sorts)
+
+      res.send({
       total: result.total,
       records: result.records,
       timePeriod: timePeriod,

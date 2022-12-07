@@ -38,7 +38,7 @@ const updateById = async (ctx, id, invoice) => {
   return res
 }
 
-const listByWallet = async (ctx, address, timePeriod, pageable,sort) => {
+const listByWallet = async (ctx, address, timePeriod, pageable, sorts) => {
   let filter = {}
   filter['paymentInfo.from'] = address
   if (timePeriod) {
@@ -53,14 +53,32 @@ const listByWallet = async (ctx, address, timePeriod, pageable,sort) => {
     .countDocuments(filter)
   if (!count) return { total: 0, records: [] }
 
-  let createOrder = {createdAt:sort}
-  let res = await db
-    .collection(collname)
-    .find(filter)
-    .sort(createOrder)
-    .skip(parseInt(pageable.number > 0 ? (pageable.number - 1) * pageable.size : 0))
-    .limit(parseInt(pageable.size))
-    .toArray()
+  /Use map to prevent duplication
+  let sortFields = new Map()
+  if (sorts.size > 0){
+    for (let [key,val] of sorts.entries()) {
+      switch (key) {
+        case "create":
+          sortFields.set("create", {"createdAt":val})
+          break
+        case "update":
+          sortFields.set("update", {"updatedAt":val})
+          break
+        default:
+          break
+      }
+    }
+  }
+
+  let res = await db.collection(collname).find(filter)
+  if (sortFields.size >0){
+    for (let value of sortFields.values()) {
+      res.sort(value)
+    }
+  }
+  res.skip(parseInt(pageable.number > 0 ? (pageable.number - 1) * pageable.size : 0))
+      .limit(parseInt(pageable.size))
+      .toArray()
 
   ctx.log.trace('%s list many by address, count: %s res: %s', collname, count, res)
 
