@@ -53,7 +53,7 @@ const listByWallet = async (ctx, address, timePeriod, pageable, sorts) => {
     .countDocuments(filter)
   if (!count) return { total: 0, records: [] }
 
-  /Use map to prevent duplication
+  //Use map to prevent duplication
   let sortFields = new Map()
   if (sorts.size > 0){
     for (let [key,val] of sorts.entries()) {

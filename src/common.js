@@ -124,5 +124,4 @@ module.exports = {
     asc,
     desc,
     sortMeta
-
 }
