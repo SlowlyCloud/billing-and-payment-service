@@ -1,4 +1,4 @@
-name: Shipping to AWS ECS from Source Code
+name: Build and Deploy to PROD
   
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ env:
   APP_ENV: production
   AWS_REGION: us-west-2
   ECR_REPOSITORY: billing-and-payment-service
-  ECS_SERVICE: billing-and-payment-service-service
+  ECS_SERVICE: billing-and-payment-service-serviceg
   ECS_CLUSTER: flip-god
   ECS_TASK_DEFINITION: billing-and-payment-service/ecs/task-definition.json
   CONTAINER_NAME: billing-and-payment-service

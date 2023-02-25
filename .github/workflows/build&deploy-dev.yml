@@ -1,4 +1,4 @@
-name: Shipping to AWS ECS from Source Code
+name: Build and Deploy to DEV
   
 on:
   workflow_dispatch:
