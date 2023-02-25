@@ -8,9 +8,11 @@ RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY package.json package.json
 
 RUN yarn install && yarn global add pm2
+
+COPY . .
 
 EXPOSE 3000
 
