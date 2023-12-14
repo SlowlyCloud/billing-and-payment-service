@@ -1,6 +1,7 @@
 const log = require('../../logging')
 const db = require('../../db')
 const { Pageable } = require('../../common')
+const { Invoice } = require('../../domain/invoice')
 module.exports = require('express').Router()
 
   .get('/history', async (req, res) => {
@@ -11,10 +12,11 @@ module.exports = require('express').Router()
       parseInt(req.query.pageSize) || 10,
       parseInt(req.query.pageNum) || 1
     )
+      let sort = req.query.sort
+      let sortFields = Invoice.sorts(sort)
+      const result = await db.invoice.listByWallet(req.ctx, address, timePeriod, pageable,sortFields)
 
-    const result = await db.invoice.listByWallet(req.ctx, address, timePeriod, pageable)
-
-    res.send({
+      res.send({
       total: result.total,
       records: result.records,
       timePeriod: timePeriod,

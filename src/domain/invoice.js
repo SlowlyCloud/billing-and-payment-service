@@ -3,6 +3,8 @@ const ethereum = require('../blockchain/ethereum')
 const { Decimal } = require('decimal.js')
 
 const ETHER_WEI = new Decimal(1000000000000000000)
+const asc = 1
+const desc= -1
 
 class PaymentInfo {
   constructor(txId, chain, currency, unit, amount, from, to) {
@@ -63,6 +65,32 @@ class Invoice {
       e.statusCode = 400
       throw e
     }
+  }
+
+  static sorts(sort) {
+    let sortFields = {}
+    if (!(sort === ''|| sort === null || sort === undefined)){
+      sort = sort.split(",")
+      for (let i = 0; i < sort.length; i++) {
+        switch (sort[i]) {
+          case "-create":
+            sortFields.createdAt = desc
+            break
+          case "+create":
+            sortFields.createdAt = asc
+            break
+          case "-update":
+            sortFields.updatedAt = desc
+            break
+          case "+update":
+            sortFields.updatedAt = asc
+            break
+          default:
+            break
+        }
+      }
+    }
+    return sortFields
   }
 
   isCompleted = () => this.status === 'completed'
